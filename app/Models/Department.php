@@ -13,4 +13,10 @@ class Department extends Model
         'GroupName',
         'ModifiedDate'
     ];
+    protected $primaryKey = 'DepartmentID';
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $keyType = 'string';
+
+   
 }

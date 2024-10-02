@@ -14,4 +14,10 @@ class Shift extends Model
         'EndTime',
         'ModifiedDate'
     ];
+    protected $primaryKey = 'ShiftID';
+
+    // If the primary key is not an incrementing integer
+    public $incrementing = false;
+
+   
 }

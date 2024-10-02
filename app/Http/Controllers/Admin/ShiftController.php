@@ -22,7 +22,7 @@ class ShiftController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.shifts.create');
     }
 
     /**
@@ -30,15 +30,34 @@ class ShiftController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the form data
+        $validatedData = $request->validate([
+            'ShiftID' => 'required|integer|unique:shifts,ShiftID',
+            'Name' => 'required|string|max:255',
+            'StartTime' => 'required|date_format:H:i:s',
+            'EndTime' => 'required|date_format:H:i:s|after:StartTime',
+            'ModifiedDate' => 'required|date',
+        ]);
+
+        // Create a new shift
+        $shift = new Shift();
+        $shift->ShiftID = $validatedData['ShiftID'];
+        $shift->Name = $validatedData['Name'];
+        $shift->StartTime = $validatedData['StartTime'];
+        $shift->EndTime = $validatedData['EndTime'];
+        $shift->ModifiedDate = $validatedData['ModifiedDate'];
+        $shift->save();
+
+        return redirect()->route('admin.shifts.index')->with('success', 'Shift created successfully');
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Shift $shift)
     {
-        //
+        return view('admin.shifts.show', compact('shift'));
     }
 
     /**
@@ -46,7 +65,7 @@ class ShiftController extends Controller
      */
     public function edit(Shift $shift)
     {
-        //
+        return view('admin.shifts.edit', compact('shift'));
     }
 
     /**
@@ -54,14 +73,28 @@ class ShiftController extends Controller
      */
     public function update(Request $request, Shift $shift)
     {
-        //
+        // Validate the form data
+        $validatedData = $request->validate([
+            'ShiftID' => 'required|integer|unique:shifts,ShiftID,' . $shift->ShiftID . ',ShiftID',
+            'Name' => 'required|string|max:255',
+            'StartTime' => 'required|date_format:H:i:s',
+            'EndTime' => 'required|date_format:H:i:s|after:StartTime',
+            'ModifiedDate' => 'required|date',
+        ]);
+
+        $shift->update($validatedData);
+
+        return redirect()->route('admin.shifts.index')->with('success', 'Shift updated successfully');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Shift $shift)
+    public function destroy(Shift $shift) 
     {
-        //
+        $shift->delete();
+
+        return redirect()->route('admin.shifts.index')->with('success', 'Shift deleted successfully');
     }
 }

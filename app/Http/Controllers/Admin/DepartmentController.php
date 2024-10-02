@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DepartmentController extends Controller
 {
@@ -22,7 +23,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.departments.create');
     }
 
     /**
@@ -30,7 +31,20 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the form data
+        $validatedData = $request->validate([
+            'DepartmentID' => 'required|integer|unique:departments,DepartmentID',
+            'Name' => 'required|string|max:255',
+            'GroupName' => 'required|string|max:255',
+            'ModifiedDate' => 'required|date',
+        ]);
+
+        // Create new department
+        $department = new Department($validatedData);
+        $department->save();
+
+        // Redirect back to department list with a success message
+        return redirect()->route('admin.departments.index')->with('success', 'Department added successfully');
     }
 
     /**
@@ -38,7 +52,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        //
+        return view('admin.departments.show', compact('department'));
     }
 
     /**
@@ -46,7 +60,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
-        //
+        return view('admin.departments.edit', compact('department'));
     }
 
     /**
@@ -54,7 +68,17 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'group_name' => 'required|max:255',
+
+
+        ]);
+        $department->Name = $request->name;
+        $department->GroupName = $request->group_name;
+        $department->save();
+
+        return redirect()->route('admin.departments.index')->with('success', 'Department updated successfully.');
     }
 
     /**
@@ -62,6 +86,21 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        $department->delete();
+
+        return redirect()->route('admin.departments.index')->with('success', 'Department deleted successfully.');
+    }
+    public function employees($departmentID)
+    {
+        // Get employees belonging to the department
+        $employees = DB::table('employee_department_history')
+            ->where('DepartmentID', $departmentID)
+            ->select('BusinessEntityID', 'StartDate', 'EndDate')
+            ->get();
+
+        // Get the department details
+        $department = Department::find($departmentID);
+
+        return view('admin.departments.employees', compact('department', 'employees'));
     }
 }

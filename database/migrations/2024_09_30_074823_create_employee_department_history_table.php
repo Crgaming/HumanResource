@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('ShiftID');
             $table->date('StartDate');
             $table->date('EndDate')->nullable();  // Allow null for ongoing employment
-
+            $table -> dateTime('ModifiedDate');
             $table->timestamps();
 
             // Foreign Key Constraints

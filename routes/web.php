@@ -41,16 +41,21 @@ Route::put('/admin/departments/{department}', [DepartmentController::class, 'upd
     ->name('admin.departments.update');
 Route::delete('/admin/departments/{department}', [DepartmentController::class, 'destroy'])
     ->name('admin.departments.destroy');
+Route::get('/admin/departments/{department}/employees', [DepartmentController::class, 'employees'])
+    ->name('admin.departments.employees');
+
 // Shifts
 Route::get('/admin/shifts', [ShiftController::class, 'index'])
     ->name('admin.shifts.index');
 Route::get('/admin/shifts/create', [ShiftController::class, 'create'])
     ->name('admin.shifts.create');
-Route::post('/admin/shifts', [ShiftController::class, 'store'])
+    Route::post('/admin/shifts', [ShiftController::class, 'store'])
     ->name('admin.shifts.store');
 Route::get('/admin/shifts/{shift}/edit', [ShiftController::class, 'edit'])
     ->name('admin.shifts.edit');
 Route::put('/admin/shifts/{shift}', [ShiftController::class, 'update'])
     ->name('admin.shifts.update');
+Route::get('/admin/shifts/{shift}', [ShiftController::class, 'show'])
+    ->name('admin.shifts.show');
 Route::delete('/admin/shifts/{shift}', [ShiftController::class, 'destroy'])
     ->name('admin.shifts.destroy');
